@@ -1,0 +1,30 @@
+#tourOverlay {
+    background:#000000;
+    background:rgba(0,0,0,0.8);
+    display:none;
+    width:100%; height:100%;
+    position:absolute; 
+    top:0; 
+    left:0; 
+    z-index:99995;
+
+    -webkit-user-select: none;
+     -moz-user-select: none;
+     -ms-user-select: none;
+     -o-user-select: none;
+     user-select: none; 
+}
+
+#tourOverlay img.tourImage {
+    position: absolute;
+    z-index:99996;
+
+}
+
+.expose {
+    position:relative;
+    z-index: 99999; /*POP OUT!!!*/
+    -moz-box-shadow: 0 0 3px #ccc;
+    -webkit-box-shadow: 0 0 3px #ccc;
+    box-shadow: 0 0 3px #ccc;
+}
