@@ -87,7 +87,6 @@ TourSequence.prototype.startTour = function() {
             image.css("height", tourStep.imageHolder.height);
             image.css("width", tourStep.imageHolder.width);
 
-
             var offset = calculateImagePosition(image, control, tourStep.arrowDirection, tourStep.arrowPointCoordinates);
 
             if (typeof offset !== 'undefined' && offset !== null) {
@@ -97,10 +96,7 @@ TourSequence.prototype.startTour = function() {
 
             image.fadeIn(300);
         }
-
     }
-
-
 };
 
 function calculateImagePosition(image, control, pointerDirection, pointerCoord, distanceBetween) {
@@ -109,22 +105,25 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
 
     // default the distance between to be something "nice" if none is specified
     // this is important since nothing ever specifies it right now!
-    distanceBetween = typeof distanceBetween !== 'undefined' && pointerCoord !== null ? distanceBetween : 20;
+    distanceBetween = typeof distanceBetween !== 'undefined' && distanceBetween !== null ? distanceBetween : 20;
 
     var imageWidth = image.width();
     var imageHeight = image.height();
 
-    var leftEdge = control.offset().left;
-    var bottomEdge = control.offset().top + control.outerHeight();
-    var middlePoint = control.offset().left + control.outerWidth() / 2;
+    var controlHasOffset = typeof control.offset() !== 'undefined' && control.offset() !== null;
+    var pointerCoordDefined = typeof pointerCoord !== 'undefined' && pointerCoord !== null;
+
+    var leftEdge = controlHasOffset ? control.offset().left : 0;
+    var bottomEdge = controlHasOffset ? control.offset().top + control.outerHeight() : 0;
+    var middlePoint = controlHasOffset ? control.offset().left + control.outerWidth() / 2 : 0;
 
     var pointerY = 0;
     var pointerX = 0;
 
-    switch (pointerDirection) {
+    switch (pointerDirection.toLowerCase()) {
     case 'ne':
-        pointerY = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.y : 0;
-        pointerX = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.x : imageWidth;
+        pointerY = pointerCoordDefined ? pointerCoord.y : 0;
+        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
 
         offset.left = leftEdge - imageWidth + (imageWidth - pointerX) / 2;
         offset.top = bottomEdge - pointerY / 2;
@@ -145,8 +144,8 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
 
     case 'n':
 
-        pointerY = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.y : 0;
-        pointerX = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.x : imageWidth / 2;
+        pointerY = pointerCoordDefined ? pointerCoord.y : 0;
+        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth / 2;
 
         offset.left = middlePoint - pointerX;
         offset.top = bottomEdge - pointerY + distanceBetween;
@@ -166,8 +165,8 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
 
     default:
 
-        offset.left = pointerCoord.x;
-        offset.top = pointerCoord.y;
+        offset.left = pointerCoordDefined ? pointerCoord.x : 0;
+        offset.top = pointerCoordDefined ? pointerCoord.y : 0;
 
     }
 
