@@ -13,11 +13,11 @@ Simply build a tourSequence that you wish to run.  Clicking the overlay at any t
 ```javascript
 $(document).ready(function () {
 
-            var tour = new TourSequence();
-            tour.addStep(new TourStep('#button1', new ImageHolder('/images/getStartedExplain.png', 640, 400), 'ne', new Coordinate(544, 6)));
-            tour.addStep(new TourStep('#navDiv', new ImageHolder('/images/navExplain.png', 640, 400), 'n', new Coordinate(126, 12)));
-            tour.addStep(new TourStep('#search', new ImageHolder('/images/searchExplain.png', 640, 400), 'n', new Coordinate(289, 60)));
-            tour.startTour();
+   var tour = new TourSequence();
+   tour.addStep(new TourStep('#button1', new ImageHolder('/images/getStartedExplain.png', 640, 400), 'ne', new Coordinate(544, 6)));
+   tour.addStep(new TourStep('#navDiv', new ImageHolder('/images/navExplain.png', 640, 400), 'n', new Coordinate(126, 12)));
+   tour.addStep(new TourStep('#search', new ImageHolder('/images/searchExplain.png', 640, 400), 'n', new Coordinate(289, 60)));
+   tour.startTour();
 
 });
 ```
