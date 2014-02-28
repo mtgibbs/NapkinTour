@@ -43,7 +43,7 @@ TourSequence.prototype.startTour = function() {
         // keep people from dragging the image around
         $(img).on('dragstart', function (event) { event.preventDefault(); });
 
-        tourOverlay.height($(window).attr("scrollHeight"));
+        tourOverlay.height($(document).height() + 100);
         // IE8 fix for fadeIn
         tourOverlay.css('filter', 'alpha(opacity=80)');
         tourOverlay.fadeIn(400, function() {
@@ -107,7 +107,9 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
 
     var offset = { left: 0, top: 0 };
 
-    distanceBetween = typeof distanceBetween !== 'undefined' && pointerCoord !== null ? distanceBetween : 0;
+    // default the distance between to be something "nice" if none is specified
+    // this is important since nothing ever specifies it right now!
+    distanceBetween = typeof distanceBetween !== 'undefined' && pointerCoord !== null ? distanceBetween : 20;
 
     var imageWidth = image.width();
     var imageHeight = image.height();
@@ -147,7 +149,7 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
         pointerX = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.x : imageWidth / 2;
 
         offset.left = middlePoint - pointerX;
-        offset.top = bottomEdge + pointerY + distanceBetween;
+        offset.top = bottomEdge - pointerY + distanceBetween;
 
         break;
 
