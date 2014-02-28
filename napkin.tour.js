@@ -35,15 +35,17 @@ TourSequence.prototype.hasNextStep = function() {
 TourSequence.prototype.startTour = function() {
 
     var self = this;
-    var tourOverlay = $('<div id="tourOverlay"></div>').appendTo('body');
-    var img = $('<img class="tourImage"> </img>').appendTo(tourOverlay);
+    
+    if (self.hasNextStep()) {
+        var tourOverlay = $('<div id="tourOverlay"></div>').appendTo('body');
+        var img = $('<img class="tourImage"> </img>').appendTo(tourOverlay);
 
-    // keep people from dragging the image around
-    $(img).on('dragstart', function(event) { event.preventDefault(); });
+        // keep people from dragging the image around
+        $(img).on('dragstart', function (event) { event.preventDefault(); });
 
-    tourOverlay.fadeIn(400, function() {
+        tourOverlay.height($(window).attr("scrollHeight"));
+        tourOverlay.fadeIn(400, function() {
 
-        if (self.hasNextStep()) {
             var tourStep = self.nextStep();
             showStep(tourStep);
 
@@ -62,8 +64,14 @@ TourSequence.prototype.startTour = function() {
                     tourOverlay.fadeOut(800);
                 }
             });
-        }
-    });
+
+            $(window).resize(function() {
+                console.log('resized');
+                showStep(tourStep);
+            });
+
+        });
+    }
 
     function showStep(tourStep) {
         var control = $(tourStep.controlToHighlight);
@@ -72,7 +80,7 @@ TourSequence.prototype.startTour = function() {
         var image = $('.tourImage');
 
         if (tourStep.imageHolder !== null) {
-            
+
             image.attr('src', tourStep.imageHolder.imagePath);
             image.css("height", tourStep.imageHolder.height);
             image.css("width", tourStep.imageHolder.width);
@@ -90,80 +98,77 @@ TourSequence.prototype.startTour = function() {
 
     }
 
-    function calculateImagePosition(image, control, pointerDirection, pointerCoord, distanceBetween) {
-
-        var offset = { left: 0, top: 0 };
-
-        distanceBetween = typeof distanceBetween !== 'undefined' && pointerCoord !== null ? distanceBetween : 0;
-
-        var imageWidth = image.width();
-        var imageHeight = image.height();
-
-        var leftEdge = control.offset().left;
-        var bottomEdge = control.offset().top + control.outerHeight();
-        var middlePoint = control.offset().left + control.outerWidth() / 2;
-
-        var pointerY = 0;
-        var pointerX = 0;
-
-        //console.log('imageWidth:' + imageWidth);
-        //console.log('imageHeight:' + imageHeight);
-        //console.log("middlepoint: " + middlePoint);
-
-        switch (pointerDirection) {
-        case 'ne':
-            pointerY = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.y : 0;
-            pointerX = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.x : imageWidth;
-
-            offset.left = leftEdge - imageWidth + (imageWidth - pointerX) / 2;
-            offset.top = bottomEdge - pointerY / 2;
-
-            break;
-
-        case 'nw':
-
-            break;
-
-        case 'se':
-
-            break;
-
-        case 'sw':
-
-            break;
-
-        case 'n':
-
-            pointerY = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.y : 0;
-            pointerX = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.x : imageWidth / 2;
-
-            offset.left = middlePoint - pointerX;
-            offset.top = bottomEdge + pointerY + distanceBetween;
-
-            break;
-
-        case 's':
-
-            break;
-
-        case 'e':
-            break;
-
-        case 'w':
-
-            break;
-
-        default:
-
-            offset.left = pointerCoord.x;
-            offset.top = pointerCoord.y;
-
-        }
-
-        return offset;
-    }
 
 };
+
+function calculateImagePosition(image, control, pointerDirection, pointerCoord, distanceBetween) {
+
+    var offset = { left: 0, top: 0 };
+
+    distanceBetween = typeof distanceBetween !== 'undefined' && pointerCoord !== null ? distanceBetween : 0;
+
+    var imageWidth = image.width();
+    var imageHeight = image.height();
+
+    var leftEdge = control.offset().left;
+    var bottomEdge = control.offset().top + control.outerHeight();
+    var middlePoint = control.offset().left + control.outerWidth() / 2;
+
+    var pointerY = 0;
+    var pointerX = 0;
+
+    switch (pointerDirection) {
+    case 'ne':
+        pointerY = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.y : 0;
+        pointerX = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.x : imageWidth;
+
+        offset.left = leftEdge - imageWidth + (imageWidth - pointerX) / 2;
+        offset.top = bottomEdge - pointerY / 2;
+
+        break;
+
+    case 'nw':
+
+        break;
+
+    case 'se':
+
+        break;
+
+    case 'sw':
+
+        break;
+
+    case 'n':
+
+        pointerY = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.y : 0;
+        pointerX = typeof pointerCoord !== 'undefined' && pointerCoord !== null ? pointerCoord.x : imageWidth / 2;
+
+        offset.left = middlePoint - pointerX;
+        offset.top = bottomEdge + pointerY + distanceBetween;
+
+        break;
+
+    case 's':
+
+        break;
+
+    case 'e':
+        break;
+
+    case 'w':
+
+        break;
+
+    default:
+
+        offset.left = pointerCoord.x;
+        offset.top = pointerCoord.y;
+
+    }
+
+    return offset;
+}
 
 jQuery.fn.expose = function() {
     $(this).addClass('expose');
