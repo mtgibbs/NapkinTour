@@ -125,13 +125,17 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
         pointerY = pointerCoordDefined ? pointerCoord.y : 0;
         pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
 
-        offset.left = leftEdge - imageWidth + (imageWidth - pointerX) / 2;
+        offset.left = leftEdge - imageWidth + (imageWidth - pointerX) ;
         offset.top = bottomEdge - pointerY / 2;
 
         break;
 
     case 'nw':
+        pointerY = pointerCoordDefined ? pointerCoord.y : 0;
+        pointerX = pointerCoordDefined ? pointerCoord.x : 0;
 
+        offset.left = leftEdge + imageWidth + pointerX;
+        offset.top = bottomEdge - pointerY / 2;
         break;
 
     case 'se':
