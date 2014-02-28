@@ -44,6 +44,8 @@ TourSequence.prototype.startTour = function() {
         $(img).on('dragstart', function (event) { event.preventDefault(); });
 
         tourOverlay.height($(window).attr("scrollHeight"));
+        // IE8 fix for fadeIn
+        tourOverlay.css('filter', 'alpha(opacity=80)');
         tourOverlay.fadeIn(400, function() {
 
             var tourStep = self.nextStep();
