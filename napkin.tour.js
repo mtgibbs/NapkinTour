@@ -62,6 +62,7 @@ TourSequence.prototype.startTour = function() {
                         showStep(tourStep);
                     });
                 } else {
+                    $(tourStep.controlToHighlight).unexpose();
                     // tour is over, go home
                     tourOverlay.fadeOut(800);
                 }
