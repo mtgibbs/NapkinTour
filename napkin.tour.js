@@ -115,8 +115,10 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
     var pointerCoordDefined = typeof pointerCoord !== 'undefined' && pointerCoord !== null;
 
     var leftEdge = controlHasOffset ? control.offset().left : 0;
+    var rightEdge = leftEdge + control.outerWidth();
     var bottomEdge = controlHasOffset ? control.offset().top + control.outerHeight() : 0;
-    var middlePoint = controlHasOffset ? control.offset().left + control.outerWidth() / 2 : 0;
+    var bottomMiddlePoint = controlHasOffset ? control.offset().left + control.outerWidth() / 2 : 0;
+    var sideMiddlePoint = controlHasOffset ? control.offset().top + control.outerHeight() / 2 : 0;
 
     var pointerY = 0;
     var pointerX = 0;
@@ -152,7 +154,7 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
         pointerY = pointerCoordDefined ? pointerCoord.y : 0;
         pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth / 2;
 
-        offset.left = middlePoint - pointerX;
+        offset.left = bottomMiddlePoint - pointerX;
         offset.top = bottomEdge - pointerY + distanceBetween;
 
         break;
@@ -162,10 +164,22 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
         break;
 
     case 'e':
+
+        pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight / 2;
+        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
+
+        offset.left = leftEdge - pointerX - distanceBetween;
+        offset.top = sideMiddlePoint - pointerY;
+
         break;
 
     case 'w':
 
+        pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight / 2;
+        pointerX = pointerCoordDefined ? pointerCoord.x : 0;
+
+        offset.left = rightEdge - pointerX + distanceBetween;
+        offset.top = sideMiddlePoint - pointerY;
         break;
 
     default:
