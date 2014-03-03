@@ -55,14 +55,14 @@ TourSequence.prototype.startTour = function() {
             tourOverlay.click(function() {
                 // if there's another sequence, hide the old one before exposing the new one.
                 if (self.hasNextStep()) {
-                    $(tourStep.controlToHighlight).unexpose();
+                    $(tourStep.controlToHighlight).first().unexpose();
                     tourStep = self.nextStep();
                     // fade out the existing slide
                     img.fadeOut(300, function() {
                         showStep(tourStep);
                     });
                 } else {
-                    $(tourStep.controlToHighlight).unexpose();
+                    $(tourStep.controlToHighlight).first().unexpose();
                     // tour is over, go home
                     tourOverlay.fadeOut(800);
                 }
@@ -77,7 +77,7 @@ TourSequence.prototype.startTour = function() {
     }
 
     function showStep(tourStep) {
-        var control = $(tourStep.controlToHighlight);
+        var control = $(tourStep.controlToHighlight).first();
         control.expose();
 
         var image = $('.tourImage');
@@ -85,8 +85,8 @@ TourSequence.prototype.startTour = function() {
         if (tourStep.imageHolder !== null) {
 
             image.attr('src', tourStep.imageHolder.imagePath);
-            image.css("height", tourStep.imageHolder.height);
-            image.css("width", tourStep.imageHolder.width);
+            image.css('height', tourStep.imageHolder.height);
+            image.css('width', tourStep.imageHolder.width);
 
             var offset = calculateImagePosition(image, control, tourStep.arrowDirection, tourStep.arrowPointCoordinates);
 
