@@ -11,13 +11,23 @@ function ImageHolder(imagePath, width, height) {
     this.width = width;
 }
 
+function ExitTourImage(imageHolder, offsetCoordinates) {
+    this.imageHolder = imageHolder;
+    if (typeof offsetCoordinates !== 'undefined' && offsetCoordinates !== null) {
+        this.exitTourOffsetCoordinates = offsetCoordinates;
+    } else {
+        this.exitTourOffsetCoordinates = new Coordinate(0, 0);
+    }
+}
+
 function Coordinate(x, y) {
     this.x = x;
     this.y = y;
 }
 
-function TourSequence() {
+function TourSequence(exitTourImage) {
     this.tourSteps = [];
+    this.exitTourImage = exitTourImage;
 }
 
 TourSequence.prototype.addStep = function(step) {
@@ -39,6 +49,18 @@ TourSequence.prototype.startTour = function() {
     if (self.hasNextStep()) {
         var tourOverlay = $('<div id="tourOverlay"></div>').appendTo('body');
         var img = $('<img class="tourImage"> </img>').appendTo(tourOverlay);
+        
+        // if the called defined an exit image, place it on the screen and bind a click event to cancel the tour
+        if (typeof self.exitTourImage !== 'undefined' && self.exitTourImage !== null) {
+            var closeImg = $('<img id="napkinTourClose"> </img>').appendTo(tourOverlay);
+            closeImg.attr('src', self.exitTourImage.imageHolder.imagePath);
+            closeImg.css('top', self.exitTourImage.exitTourOffsetCoordinates.y);
+            closeImg.css('left', self.exitTourImage.exitTourOffsetCoordinates.x);
+
+            closeImg.click(function() {
+                tourOverlay.fadeOut(800);
+            });
+        }
 
         // keep people from dragging the image around
         $(img).on('dragstart', function (event) { event.preventDefault(); });
