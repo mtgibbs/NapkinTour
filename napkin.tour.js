@@ -48,7 +48,7 @@ TourSequence.prototype.startTour = function() {
     var self = this;
     
     if (self.hasNextStep()) {
-        var tourOverlay = $('<div id="tourOverlay"></div>').appendTo('body');
+        var tourOverlay = $('<div id="napkinTourOverlay"></div>').appendTo('body');
         var img = $('<img class="tourImage"> </img>').appendTo(tourOverlay);
         var closeImg = $('<img id="napkinTourClose"> </img>').appendTo(tourOverlay);
 
@@ -59,7 +59,9 @@ TourSequence.prototype.startTour = function() {
             closeImg.attr('src', self.exitTourImage.imageHolder.imagePath);
             closeImg.css('top', self.exitTourImage.exitTourOffsetCoordinates.y);
             closeImg.css('left', self.exitTourImage.exitTourOffsetCoordinates.x);
-            
+
+            closeImg.fadeIn(300);
+
             closeImg.click(function() {
                 tourOverlay.fadeOut(800);
             });
@@ -72,10 +74,10 @@ TourSequence.prototype.startTour = function() {
         // IE8 fix for fadeIn
         tourOverlay.css('filter', 'alpha(opacity=80)');
 
-        tourOverlay.fadeIn(800, function() {
-
-            var tourStep = self.nextStep();
-            showStep(tourStep);
+        var tourStep = self.nextStep();
+        showStep(tourStep);
+        
+        tourOverlay.fadeIn(800).promise().done(function() {
 
             // bind the click to pop the rest of the tour sequences after the first
             tourOverlay.click(function () {
@@ -246,9 +248,9 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
 }
 
 jQuery.fn.expose = function() {
-    $(this).addClass('expose');
+    $(this).addClass('napkintour-expose');
 };
 
 jQuery.fn.unexpose = function() {
-    $(this).removeClass('expose');
+    $(this).removeClass('napkintour-expose');
 };

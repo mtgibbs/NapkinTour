@@ -1,6 +1,10 @@
-﻿#tourOverlay {
+﻿#napkinTourOverlay {
     background: #000000;
     background: rgba(0, 0, 0, 0.8);
+
+    /*IE8*/
+    filter: alpha(opacity=80); /* This seems broken by jQuery's fadeIn.  So it's just redundant filter now*/
+
     display: none;
     width: 100%;
     height: 100%;
@@ -9,36 +13,34 @@
     left: 0;
     z-index: 99995;
 
+    /* Make sure that nothing is highlighted by mouseover*/
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
-
-    /*IE8*/
-    filter: alpha(opacity=80); /* This seems broken by jQuery's fadeIn.  So it's just redundant filter now*/
-
 }
 
-#tourOverlay img.tourImage {
+#napkinTourOverlay img.tourImage {
     position: absolute;
     z-index: 99996;
 }
 
-.expose {
+.napkintour-expose {
     position: relative;
-    z-index: 99999; /*POP OUT!!!*/
+    z-index: 99999;
     -moz-box-shadow: 0 0 3px #ccc;
     -webkit-box-shadow: 0 0 3px #ccc;
     box-shadow: 0 0 3px #ccc;
 }
 
-#napkinTourClose {
-    opacity: .85;
-    filter: alpha(opacity=85);
+#napkinTourOverlay #napkinTourClose {
+    display: none;
+    opacity: .9;
+    filter: alpha(opacity=90);
 }
 
-#napkinTourClose:hover {
+#napkinTourOverlay #napkinTourClose:hover {
     opacity: 1;
     filter: alpha(opacity=100);
 }
