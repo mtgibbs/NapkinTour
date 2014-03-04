@@ -11,13 +11,14 @@ function ImageHolder(imagePath, width, height) {
     this.width = width;
 }
 
-function ExitTourImage(imageHolder, offsetCoordinates) {
+function ExitTourImage(imageHolder, offsetCoordinates, isVisibleAfterFirstStep) {
     this.imageHolder = imageHolder;
     if (typeof offsetCoordinates !== 'undefined' && offsetCoordinates !== null) {
         this.exitTourOffsetCoordinates = offsetCoordinates;
     } else {
         this.exitTourOffsetCoordinates = new Coordinate(0, 0);
     }
+    this.isVisibleAfterFirstStep = typeof isVisibleAfterFirstStep === 'boolean' && isVisibleAfterFirstStep;
 }
 
 function Coordinate(x, y) {
@@ -49,14 +50,16 @@ TourSequence.prototype.startTour = function() {
     if (self.hasNextStep()) {
         var tourOverlay = $('<div id="tourOverlay"></div>').appendTo('body');
         var img = $('<img class="tourImage"> </img>').appendTo(tourOverlay);
+        var closeImg = $('<img id="napkinTourClose"> </img>').appendTo(tourOverlay);
+
+        var isExitTourImageDefined = typeof self.exitTourImage !== 'undefined' && self.exitTourImage !== null;
         
         // if the called defined an exit image, place it on the screen and bind a click event to cancel the tour
-        if (typeof self.exitTourImage !== 'undefined' && self.exitTourImage !== null) {
-            var closeImg = $('<img id="napkinTourClose"> </img>').appendTo(tourOverlay);
+        if (isExitTourImageDefined) {
             closeImg.attr('src', self.exitTourImage.imageHolder.imagePath);
             closeImg.css('top', self.exitTourImage.exitTourOffsetCoordinates.y);
             closeImg.css('left', self.exitTourImage.exitTourOffsetCoordinates.x);
-
+            
             closeImg.click(function() {
                 tourOverlay.fadeOut(800);
             });
@@ -75,7 +78,14 @@ TourSequence.prototype.startTour = function() {
             showStep(tourStep);
 
             // bind the click to pop the rest of the tour sequences after the first
-            tourOverlay.click(function() {
+            tourOverlay.click(function () {
+                
+                if (isExitTourImageDefined && !self.exitTourImage.isVisibleAfterFirstStep) {
+                    closeImg.fadeOut(300, function() {
+                        this.hide();
+                    });
+                }
+
                 // if there's another sequence, hide the old one before exposing the new one.
                 if (self.hasNextStep()) {
                     $(tourStep.controlToHighlight).first().unexpose();
