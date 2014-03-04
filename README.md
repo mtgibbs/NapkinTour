@@ -25,10 +25,9 @@ $(document).ready(function () {
 ### Future Feature Ideas
 
 * .svg support with image fallback for IE
-* the rest of the directions (currently only N and NE)
 * Moving forward and backward through the tour.
 * Skipping out of the tour instantly.
-* Remembering where the tour was left off...?
+* Better configuration options for timing and fade opacities.
 
 ### Dependencies
 
