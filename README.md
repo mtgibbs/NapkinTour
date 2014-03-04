@@ -6,7 +6,7 @@ Made this script for giving a brief tour of a site while loading images (hopeful
 
 ### Usage
 
-Simply build a tourSequence that you wish to run.  Clicking the overlay at any time moves on to the next Step of the Sequence.  Provide the image and the size you want it to be and it will be placed into the overlay.  The script will then do it's best to line the arrow tip (specified as the Coordinate in the example) to the highlighted div without you having to worry about exactly where to place the image.  Window resizes are handled so they move with the button as it might chance position as the window shrinks.
+Simply build a tourSequence that you wish to run.  Clicking the overlay at any time moves on to the next Step of the Sequence.  Provide the image and the size you want it to be and it will be placed into the overlay.  The script will then do it's best to line the arrow tip (specified as the Coordinate in the example) to the highlighted div without you having to worry about exactly where to place the image.  Window resizes are handled so they move with the button as it might change position as the window shrinks.
 
 > Example:
 
