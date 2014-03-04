@@ -46,7 +46,8 @@ TourSequence.prototype.startTour = function() {
         tourOverlay.height($(document).height() + 100);
         // IE8 fix for fadeIn
         tourOverlay.css('filter', 'alpha(opacity=80)');
-        tourOverlay.fadeIn(400, function() {
+
+        tourOverlay.fadeIn(800, function() {
 
             var tourStep = self.nextStep();
             showStep(tourStep);
@@ -114,26 +115,30 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
     var controlHasOffset = typeof control.offset() !== 'undefined' && control.offset() !== null;
     var pointerCoordDefined = typeof pointerCoord !== 'undefined' && pointerCoord !== null;
 
+    // determine the offsets for the edges of the control
     var leftEdge = controlHasOffset ? control.offset().left : 0;
     var rightEdge = leftEdge + control.outerWidth();
-    var bottomEdge = controlHasOffset ? control.offset().top + control.outerHeight() : 0;
-    var bottomMiddlePoint = controlHasOffset ? control.offset().left + control.outerWidth() / 2 : 0;
-    var sideMiddlePoint = controlHasOffset ? control.offset().top + control.outerHeight() / 2 : 0;
+    var topEdge = controlHasOffset ? control.offset().top : 0;
+    var bottomEdge = topEdge + control.outerHeight();
+    var xMiddlePoint = controlHasOffset ? control.offset().left + control.outerWidth() / 2 : 0;
+    var yMiddlePoint = controlHasOffset ? control.offset().top + control.outerHeight() / 2 : 0;
 
     var pointerY = 0;
     var pointerX = 0;
 
     switch (pointerDirection.toLowerCase()) {
     case 'ne':
+
         pointerY = pointerCoordDefined ? pointerCoord.y : 0;
         pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
 
-        offset.left = leftEdge - imageWidth + (imageWidth - pointerX) ;
+        offset.left = leftEdge - pointerX;
         offset.top = bottomEdge - pointerY / 2;
 
         break;
 
     case 'nw':
+
         pointerY = pointerCoordDefined ? pointerCoord.y : 0;
         pointerX = pointerCoordDefined ? pointerCoord.x : 0;
 
@@ -143,10 +148,20 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
 
     case 'se':
 
+        pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight;
+        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
+
+        offset.left = leftEdge - pointerX;
+        offset.top = topEdge - imageHeight + pointerY / 2;
         break;
 
     case 'sw':
 
+        pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight;
+        pointerX = pointerCoordDefined ? pointerCoord.x : 0;
+
+        offset.left = rightEdge + imageWidth + pointerX;
+        offset.top = topEdge - imageHeight + pointerY / 2;
         break;
 
     case 'n':
@@ -154,12 +169,18 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
         pointerY = pointerCoordDefined ? pointerCoord.y : 0;
         pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth / 2;
 
-        offset.left = bottomMiddlePoint - pointerX;
+        offset.left = xMiddlePoint - pointerX;
         offset.top = bottomEdge - pointerY + distanceBetween;
 
         break;
 
     case 's':
+
+        pointerY = pointerCoordDefined ? pointerCoord.y : bottomEdge;
+        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth / 2;
+
+        offset.left = xMiddlePoint - pointerX;
+        offset.top = topEdge - imageHeight + pointerY - distanceBetween;
 
         break;
 
@@ -169,7 +190,7 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
         pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
 
         offset.left = leftEdge - pointerX - distanceBetween;
-        offset.top = sideMiddlePoint - pointerY;
+        offset.top = yMiddlePoint - pointerY;
 
         break;
 
@@ -179,7 +200,7 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
         pointerX = pointerCoordDefined ? pointerCoord.x : 0;
 
         offset.left = rightEdge - pointerX + distanceBetween;
-        offset.top = sideMiddlePoint - pointerY;
+        offset.top = yMiddlePoint - pointerY;
         break;
 
     default:
