@@ -5,6 +5,29 @@
     this.arrowPointCoordinates = arrowPointCoordinates;
 }
 
+TourStep.prototype.show = function() {
+    var control = $(this.controlToHighlight).first();
+    control.expose();
+
+    var image = $('.tourImage');
+
+    if (this.imageHolder !== null) {
+
+        image.attr('src', this.imageHolder.imagePath);
+        image.css('height', this.imageHolder.height);
+        image.css('width', this.imageHolder.width);
+
+        var offset = calculateImagePosition(image, control, this.arrowDirection, this.arrowPointCoordinates);
+
+        if (typeof offset !== 'undefined' && offset !== null) {
+            image.css('left', offset.left);
+            image.css('top', offset.top);
+        }
+
+        image.fadeIn(300);
+    }
+};
+
 function ImageHolder(imagePath, width, height) {
     this.imagePath = imagePath;
     this.height = height;
@@ -67,17 +90,21 @@ TourSequence.prototype.startTour = function() {
             });
         }
 
-        // keep people from dragging the image around
+        // keep people from dragging the images around
         $(img).on('dragstart', function (event) { event.preventDefault(); });
-
-        tourOverlay.height($(document).height() + 100);
-        // IE8 fix for fadeIn
-        tourOverlay.css('filter', 'alpha(opacity=80)');
+        $(closeImg).on('dragstart', function (event) { event.preventDefault(); });
 
         var tourStep = self.nextStep();
-        showStep(tourStep);
+        tourStep.show();
         
-        tourOverlay.fadeIn(800).promise().done(function() {
+        // IE8 fix for fadeIn
+        tourOverlay.css('filter', 'alpha(opacity=80)');
+        tourOverlay.fadeIn(800).promise().done(function () {
+            
+            // bind window resize function to recalculate the current tourstep
+            $(window).resize(function () {
+                tourStep.show();
+            });
 
             // bind the click to pop the rest of the tour sequences after the first
             tourOverlay.click(function () {
@@ -94,7 +121,7 @@ TourSequence.prototype.startTour = function() {
                     tourStep = self.nextStep();
                     // fade out the existing slide
                     img.fadeOut(300, function() {
-                        showStep(tourStep);
+                        tourStep.show();
                     });
                 } else {
                     $(tourStep.controlToHighlight).first().unexpose();
@@ -102,36 +129,7 @@ TourSequence.prototype.startTour = function() {
                     tourOverlay.fadeOut(800);
                 }
             });
-
-            $(window).resize(function() {
-                console.log('resized');
-                showStep(tourStep);
-            });
-
         });
-    }
-
-    function showStep(tourStep) {
-        var control = $(tourStep.controlToHighlight).first();
-        control.expose();
-
-        var image = $('.tourImage');
-
-        if (tourStep.imageHolder !== null) {
-
-            image.attr('src', tourStep.imageHolder.imagePath);
-            image.css('height', tourStep.imageHolder.height);
-            image.css('width', tourStep.imageHolder.width);
-
-            var offset = calculateImagePosition(image, control, tourStep.arrowDirection, tourStep.arrowPointCoordinates);
-
-            if (typeof offset !== 'undefined' && offset !== null) {
-                image.css('left', offset.left);
-                image.css('top', offset.top);
-            }
-
-            image.fadeIn(300);
-        }
     }
 };
 
@@ -232,7 +230,7 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
 
         pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight / 2;
         pointerX = pointerCoordDefined ? pointerCoord.x : 0;
-
+        
         offset.left = rightEdge - pointerX + distanceBetween;
         offset.top = yMiddlePoint - pointerY;
         break;
