@@ -35,6 +35,7 @@
 }
 
 #napkinTourOverlay #napkinTourClose {
+    position: absolute;
     display: none;
     opacity: .9;
     filter: alpha(opacity=90);

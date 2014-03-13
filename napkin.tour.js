@@ -71,7 +71,7 @@ TourSequence.prototype.startTour = function() {
     var self = this;
     
     if (self.hasNextStep()) {
-        var tourOverlay = $('<div id="napkinTourOverlay"></div>').appendTo('body');
+        var tourOverlay = $('<div id="napkinTourOverlay" style="filter: alpha(opacity=80)"></div>').appendTo('body');
         var img = $('<img class="tourImage"> </img>').appendTo(tourOverlay);
         var closeImg = $('<img id="napkinTourClose"> </img>').appendTo(tourOverlay);
 
@@ -79,13 +79,17 @@ TourSequence.prototype.startTour = function() {
         
         // if the called defined an exit image, place it on the screen and bind a click event to cancel the tour
         if (isExitTourImageDefined) {
+
             closeImg.attr('src', self.exitTourImage.imageHolder.imagePath);
+            closeImg.css('height', self.exitTourImage.imageHolder.height);
+            closeImg.css('width', self.exitTourImage.imageHolder.width);
             closeImg.css('top', self.exitTourImage.exitTourOffsetCoordinates.y);
             closeImg.css('left', self.exitTourImage.exitTourOffsetCoordinates.x);
 
             closeImg.fadeIn(300);
 
-            closeImg.click(function() {
+            closeImg.click(function (e) {
+                e.stopPropagation();
                 tourOverlay.fadeOut(800);
             });
         }
@@ -97,8 +101,6 @@ TourSequence.prototype.startTour = function() {
         var tourStep = self.nextStep();
         tourStep.show();
         
-        // IE8 fix for fadeIn
-        tourOverlay.css('filter', 'alpha(opacity=80)');
         tourOverlay.fadeIn(800).promise().done(function () {
             
             // bind window resize function to recalculate the current tourstep
