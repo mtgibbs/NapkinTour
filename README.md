@@ -26,7 +26,6 @@ $(document).ready(function () {
 
 * .svg support with image fallback for IE
 * Moving forward and backward through the tour.
-* Skipping out of the tour instantly.
 * Better configuration options for timing and fade opacities.
 
 ### Dependencies
