@@ -86,10 +86,11 @@ TourSequence.prototype.startTour = function() {
             closeImg.css('top', self.exitTourImage.exitTourOffsetCoordinates.y);
             closeImg.css('left', self.exitTourImage.exitTourOffsetCoordinates.x);
 
-            closeImg.fadeIn(300);
+            closeImg.show();
 
             closeImg.click(function (e) {
                 e.stopPropagation();
+                console.log('close image clicked?');
                 tourOverlay.fadeOut(800);
             });
         }
@@ -110,26 +111,32 @@ TourSequence.prototype.startTour = function() {
 
             // bind the click to pop the rest of the tour sequences after the first
             tourOverlay.click(function () {
-                
-                if (isExitTourImageDefined && !self.exitTourImage.isVisibleAfterFirstStep) {
-                    closeImg.fadeOut(300, function() {
-                        this.hide();
-                    });
-                }
 
                 // if there's another sequence, hide the old one before exposing the new one.
                 if (self.hasNextStep()) {
+
+                    var hideExitImage = isExitTourImageDefined && !self.exitTourImage.isVisibleAfterFirstStep;
+                    if (hideExitImage) {
+                        closeImg.animate({ opacity: "0" }, 300).promise().done(function () {
+                            closeImg.hide();
+                        });
+                    }
+                    
                     $(tourStep.controlToHighlight).first().unexpose();
                     tourStep = self.nextStep();
                     // fade out the existing slide
-                    img.fadeOut(300, function() {
+
+                    img.fadeOut(300, function () {
                         tourStep.show();
                     });
+
                 } else {
                     $(tourStep.controlToHighlight).first().unexpose();
                     // tour is over, go home
                     tourOverlay.fadeOut(800);
                 }
+                
+                
             });
         });
     }
