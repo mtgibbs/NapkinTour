@@ -90,7 +90,6 @@ TourSequence.prototype.startTour = function() {
 
             closeImg.click(function (e) {
                 e.stopPropagation();
-                console.log('close image clicked?');
                 tourOverlay.fadeOut(800);
             });
         }
