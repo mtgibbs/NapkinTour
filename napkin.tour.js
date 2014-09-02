@@ -77,6 +77,14 @@ TourSequence.prototype.startTour = function () {
 
         var isExitTourImageDefined = typeof self.exitTourImage !== 'undefined' && self.exitTourImage !== null;
 
+        // keep people from dragging the images around
+        $(img).on('dragstart', function (event) { event.preventDefault(); });
+        $(closeImg).on('dragstart', function (event) { event.preventDefault(); });
+
+        var tourStep = self.nextStep();
+        var showStep = function () { tourStep.show(); };
+        tourStep.show();
+
         // if the called defined an exit image, place it on the screen and bind a click event to cancel the tour
         if (isExitTourImageDefined) {
 
@@ -90,21 +98,16 @@ TourSequence.prototype.startTour = function () {
 
             closeImg.click(function (e) {
                 e.stopPropagation();
+                $(tourStep.controlToHighlight).first().removeClass('napkintour-expose');
+                $(window).unbind('resize', showStep);
                 tourOverlay.fadeOut(800);
             });
         }
 
-        // keep people from dragging the images around
-        $(img).on('dragstart', function (event) { event.preventDefault(); });
-        $(closeImg).on('dragstart', function (event) { event.preventDefault(); });
-
-        var tourStep = self.nextStep();
-        tourStep.show();
-
         tourOverlay.fadeIn(800).promise().done(function () {
 
             // bind window resize function to recalculate the current tourstep
-            var showStep = function () { tourStep.show(); };
+
             $(window).resize(showStep);
 
             // bind the click to pop the rest of the tour sequences after the first
