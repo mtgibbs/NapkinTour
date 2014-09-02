@@ -5,9 +5,9 @@
     this.arrowPointCoordinates = arrowPointCoordinates;
 }
 
-TourStep.prototype.show = function() {
+TourStep.prototype.show = function () {
     var control = $(this.controlToHighlight).first();
-    control.expose();
+    control.addClass('napkintour-expose');
 
     var image = $('.tourImage');
 
@@ -54,29 +54,29 @@ function TourSequence(exitTourImage) {
     this.exitTourImage = exitTourImage;
 }
 
-TourSequence.prototype.addStep = function(step) {
+TourSequence.prototype.addStep = function (step) {
     this.tourSteps.push(step);
 };
 
-TourSequence.prototype.nextStep = function() {
+TourSequence.prototype.nextStep = function () {
     return this.tourSteps.shift();
 };
 
-TourSequence.prototype.hasNextStep = function() {
+TourSequence.prototype.hasNextStep = function () {
     return this.tourSteps.length > 0;
 };
 
-TourSequence.prototype.startTour = function() {
+TourSequence.prototype.startTour = function () {
 
     var self = this;
-    
+
     if (self.hasNextStep()) {
         var tourOverlay = $('<div id="napkinTourOverlay" style="filter: alpha(opacity=80)"></div>').appendTo('body');
         var img = $('<img class="tourImage"> </img>').appendTo(tourOverlay);
         var closeImg = $('<img id="napkinTourClose"> </img>').appendTo(tourOverlay);
 
         var isExitTourImageDefined = typeof self.exitTourImage !== 'undefined' && self.exitTourImage !== null;
-        
+
         // if the called defined an exit image, place it on the screen and bind a click event to cancel the tour
         if (isExitTourImageDefined) {
 
@@ -100,13 +100,12 @@ TourSequence.prototype.startTour = function() {
 
         var tourStep = self.nextStep();
         tourStep.show();
-        
+
         tourOverlay.fadeIn(800).promise().done(function () {
-            
+
             // bind window resize function to recalculate the current tourstep
-            $(window).resize(function () {
-                tourStep.show();
-            });
+            var showStep = function () { tourStep.show(); };
+            $(window).resize(showStep);
 
             // bind the click to pop the rest of the tour sequences after the first
             tourOverlay.click(function () {
@@ -120,8 +119,8 @@ TourSequence.prototype.startTour = function() {
                             closeImg.hide();
                         });
                     }
-                    
-                    $(tourStep.controlToHighlight).first().unexpose();
+
+                    $(tourStep.controlToHighlight).first().removeClass('napkintour-expose');
                     tourStep = self.nextStep();
                     // fade out the existing slide
 
@@ -130,12 +129,12 @@ TourSequence.prototype.startTour = function() {
                     });
 
                 } else {
-                    $(tourStep.controlToHighlight).first().unexpose();
+                    $(tourStep.controlToHighlight).first().removeClass('napkintour-expose');
+                    $(window).unbind('resize', showStep);
                     // tour is over, go home
                     tourOverlay.fadeOut(800);
                 }
-                
-                
+
             });
         });
     }
@@ -167,96 +166,88 @@ function calculateImagePosition(image, control, pointerDirection, pointerCoord, 
     var pointerX = 0;
 
     switch (pointerDirection.toLowerCase()) {
-    case 'ne':
+        case 'ne':
 
-        pointerY = pointerCoordDefined ? pointerCoord.y : 0;
-        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
+            pointerY = pointerCoordDefined ? pointerCoord.y : 0;
+            pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
 
-        offset.left = leftEdge - pointerX;
-        offset.top = bottomEdge - pointerY / 2;
+            offset.left = leftEdge - pointerX;
+            offset.top = bottomEdge - pointerY / 2;
 
-        break;
+            break;
 
-    case 'nw':
+        case 'nw':
 
-        pointerY = pointerCoordDefined ? pointerCoord.y : 0;
-        pointerX = pointerCoordDefined ? pointerCoord.x : 0;
+            pointerY = pointerCoordDefined ? pointerCoord.y : 0;
+            pointerX = pointerCoordDefined ? pointerCoord.x : 0;
 
-        offset.left = leftEdge + imageWidth + pointerX;
-        offset.top = bottomEdge - pointerY / 2;
-        break;
+            offset.left = leftEdge + imageWidth + pointerX;
+            offset.top = bottomEdge - pointerY / 2;
+            break;
 
-    case 'se':
+        case 'se':
 
-        pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight;
-        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
+            pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight;
+            pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
 
-        offset.left = leftEdge - pointerX;
-        offset.top = topEdge - imageHeight + pointerY / 2;
-        break;
+            offset.left = leftEdge - pointerX;
+            offset.top = topEdge - imageHeight + pointerY / 2;
+            break;
 
-    case 'sw':
+        case 'sw':
 
-        pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight;
-        pointerX = pointerCoordDefined ? pointerCoord.x : 0;
+            pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight;
+            pointerX = pointerCoordDefined ? pointerCoord.x : 0;
 
-        offset.left = rightEdge + imageWidth + pointerX;
-        offset.top = topEdge - imageHeight + pointerY / 2;
-        break;
+            offset.left = rightEdge + imageWidth + pointerX;
+            offset.top = topEdge - imageHeight + pointerY / 2;
+            break;
 
-    case 'n':
+        case 'n':
 
-        pointerY = pointerCoordDefined ? pointerCoord.y : 0;
-        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth / 2;
+            pointerY = pointerCoordDefined ? pointerCoord.y : 0;
+            pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth / 2;
 
-        offset.left = xMiddlePoint - pointerX;
-        offset.top = bottomEdge - pointerY + distanceBetween;
+            offset.left = xMiddlePoint - pointerX;
+            offset.top = bottomEdge - pointerY + distanceBetween;
 
-        break;
+            break;
 
-    case 's':
+        case 's':
 
-        pointerY = pointerCoordDefined ? pointerCoord.y : bottomEdge;
-        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth / 2;
+            pointerY = pointerCoordDefined ? pointerCoord.y : bottomEdge;
+            pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth / 2;
 
-        offset.left = xMiddlePoint - pointerX;
-        offset.top = topEdge - imageHeight + pointerY - distanceBetween;
+            offset.left = xMiddlePoint - pointerX;
+            offset.top = topEdge - imageHeight + pointerY - distanceBetween;
 
-        break;
+            break;
 
-    case 'e':
+        case 'e':
 
-        pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight / 2;
-        pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
+            pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight / 2;
+            pointerX = pointerCoordDefined ? pointerCoord.x : imageWidth;
 
-        offset.left = leftEdge - pointerX - distanceBetween;
-        offset.top = yMiddlePoint - pointerY;
+            offset.left = leftEdge - pointerX - distanceBetween;
+            offset.top = yMiddlePoint - pointerY;
 
-        break;
+            break;
 
-    case 'w':
+        case 'w':
 
-        pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight / 2;
-        pointerX = pointerCoordDefined ? pointerCoord.x : 0;
-        
-        offset.left = rightEdge - pointerX + distanceBetween;
-        offset.top = yMiddlePoint - pointerY;
-        break;
+            pointerY = pointerCoordDefined ? pointerCoord.y : imageHeight / 2;
+            pointerX = pointerCoordDefined ? pointerCoord.x : 0;
 
-    default:
+            offset.left = rightEdge - pointerX + distanceBetween;
+            offset.top = yMiddlePoint - pointerY;
+            break;
 
-        offset.left = pointerCoordDefined ? pointerCoord.x : 0;
-        offset.top = pointerCoordDefined ? pointerCoord.y : 0;
+        default:
+
+            offset.left = pointerCoordDefined ? pointerCoord.x : 0;
+            offset.top = pointerCoordDefined ? pointerCoord.y : 0;
 
     }
 
     return offset;
 }
-
-jQuery.fn.expose = function() {
-    $(this).addClass('napkintour-expose');
-};
-
-jQuery.fn.unexpose = function() {
-    $(this).removeClass('napkintour-expose');
-};
